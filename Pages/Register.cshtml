@@ -1,0 +1,104 @@
+@page
+@using FreshFarmMarket.Models
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    var enumValues = Enum.GetValues(typeof(Gender)).Cast<Gender>();
+    var selectList = new SelectList(enumValues);
+}
+
+<main class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <h1>Register</h1>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form method="post" class="d-grid gap-3" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="UserName">Username</label>
+                    <input placeholder="UserName" asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input placeholder="Email" asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Image" class="form-label"></label>
+                    <input placeholder="Image" asp-for="Image" class="form-control">
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Gender"></label>
+                    <select asp-for="Gender" asp-items="selectList" class="form-select"></select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber">Phone Number</label>
+                    <input placeholder="PhoneNumber" asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreditCard">Credit Card Number</label>
+                    <input placeholder="CreditCard" asp-for="CreditCard" class="form-control" />
+                    <span asp-validation-for="CreditCard" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Street"></label>
+                    <input placeholder="Street" asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PostalCode">Postal Code</label>
+                    <input placeholder="PostalCode" asp-for="PostalCode" class="form-control" />
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <div class="small text-muted">Strength: <span id="strength"></span></div>
+                    <div class="small text-muted">Guesses: <span id="guesses"></span></div>
+                    <input placeholder="Password" asp-for="Password" class="form-control"
+                        onchange="checkPasswordStrength()" onkeyup="checkPasswordStrength()" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Confirm Password</label>
+                    <input placeholder="ConfirmPassword" asp-for="ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+
+<script type="text/javascript" src="~/dist/zxcvbn.js"></script>
+<script>
+    const strengthSpan = document.getElementById("strength")
+    const guessesSpan = document.getElementById("guesses")
+    const passwordInput = document.getElementById("Password")
+    const checkPasswordStrength = () => {
+        var password = passwordInput.value
+        var result = zxcvbn(password, user_inputs = [])
+
+        // score: 0 to 4
+        // guesses: number of tries
+        let { score, guesses } = result
+
+        if (score < 2) {
+            strengthSpan.className = "text-danger"
+            scoreText = "Weak"
+        } else if (score <= 3) {
+            strengthSpan.className = "text-warning"
+            scoreText = "Okay"
+        } else if (score == 4) {
+            strengthSpan.className = "text-success"
+            scoreText = "Good"
+        }
+
+        strengthSpan.innerText = scoreText
+        guessesSpan.innerText = guesses
+
+    }
+</script>
