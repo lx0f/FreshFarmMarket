@@ -1,7 +1,16 @@
+using FreshFarmMarket.Data;
+
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Default");
+    options.UseSqlite(connectionString);
+});
 
 var app = builder.Build();
 
