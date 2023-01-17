@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using FreshFarmMarket.Models;
-
+using FreshFarmMarket.Services;
+using FreshFarmMarket.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 
 namespace FreshFarmMarket.Pages;
 
@@ -12,13 +14,23 @@ public class RegisterModel : PageModel
     private readonly IHostEnvironment _env;
     private readonly ILogger<RegisterModel> _logger;
     private readonly UserManager<User> _userManager;
+    private readonly IOptions<GoogleReCaptchaConfig> _config;
+    private readonly GoogleReCaptchaService _googleService;
 
-    public RegisterModel(IHostEnvironment env, ILoggerFactory loggerFactory, UserManager<User> userManager)
+    public RegisterModel(IHostEnvironment env, ILoggerFactory loggerFactory, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService)
     {
         _env = env;
         _logger = loggerFactory.CreateLogger<RegisterModel>();
         _userManager = userManager;
+        _config = config;
+        _googleService = googleService;
     }
+
+    public string GetSiteKey() => _config.Value.SiteKey;
+
+    [BindProperty]
+    [Required]
+    public string Token { get; set; }
 
     [BindProperty]
     [Required]
@@ -73,6 +85,13 @@ public class RegisterModel : PageModel
     {
         if (!ModelState.IsValid)
             return Page();
+
+        var success = await _googleService.Verify(Token);
+
+        if (!success)
+        {
+            return Page();
+        }
 
         var userWithSameEmail = await _userManager.FindByEmailAsync(Email);
         if (userWithSameEmail is not null)

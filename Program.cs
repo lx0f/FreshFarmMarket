@@ -3,11 +3,14 @@ using FreshFarmMarket.Models;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using FreshFarmMarket.Util;
+using FreshFarmMarket.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.Configure<GoogleReCaptchaConfig>(builder.Configuration.GetSection("GoogleReCaptcha"));
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -36,6 +39,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Login";
     options.LogoutPath = "/Logout";
 });
+builder.Services.AddTransient<GoogleReCaptchaService>();
 
 var app = builder.Build();
 

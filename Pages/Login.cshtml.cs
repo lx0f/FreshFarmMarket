@@ -1,19 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 using FreshFarmMarket.Models;
+using FreshFarmMarket.Util;
+using FreshFarmMarket.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 
 namespace FreshFarmMarket.Pages;
 
 public class LoginModel : PageModel
 {
-    public readonly UserManager<User> _userManager;
-    public readonly SignInManager<User> _signInManager;
-    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager)
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly GoogleReCaptchaService _googleService;
+    private readonly IOptions<GoogleReCaptchaConfig> _config;
+    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _config = config;
+        _googleService = googleService;
     }
 
     [BindProperty]
@@ -25,10 +32,22 @@ public class LoginModel : PageModel
     [Required]
     public string Password { get; set; } = default!;
 
+    [BindProperty]
+    public string Token { get; set; }
+
+    public string GetSiteKey() => _config.Value.SiteKey;
+
     public void OnGet() { }
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        var success = await _googleService.Verify(Token);
+
+        if (!success)
         {
             return Page();
         }

@@ -20,8 +20,23 @@
                     <input placeholder="Password" asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
+                <input type="hidden" asp-for="Token">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
     </div>
 </main>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GetSiteKey()"></script>
+<script>
+    setInterval(getToken(), 115000)
+
+    function getToken() {
+        grecaptcha.ready(function () {
+            grecaptcha.execute('@Model.GetSiteKey()', { action: 'submit' }).then(function (token) {
+                console.log(token)
+                document.getElementById("Token").value = token
+            });
+        });
+    }
+</script>
