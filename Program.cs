@@ -17,6 +17,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(5);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = "FreshFarmMarketCookie";
 });
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -38,6 +39,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Login";
     options.LogoutPath = "/Logout";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
+    options.SlidingExpiration = true;
 });
 builder.Services.AddTransient<GoogleReCaptchaService>();
 

@@ -33,6 +33,9 @@ public class LoginModel : PageModel
     public string Password { get; set; } = default!;
 
     [BindProperty]
+    public bool RememberMe { get; set; }
+
+    [BindProperty]
     public string Token { get; set; }
 
     public string GetSiteKey() => _config.Value.SiteKey;
@@ -60,7 +63,7 @@ public class LoginModel : PageModel
             return Page();
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, Password, false, true);
+        var result = await _signInManager.PasswordSignInAsync(user, Password, RememberMe, true);
         if (result.Succeeded)
         {
             return Redirect("/Index");
