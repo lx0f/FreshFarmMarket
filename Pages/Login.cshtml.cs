@@ -68,6 +68,14 @@ public class LoginModel : PageModel
         {
             return Redirect("/Index");
         }
+        else if (result.IsLockedOut)
+        {
+            return Redirect("/LockedOut");
+        }
+        else if (result.IsNotAllowed)
+        {
+            return Forbid();
+        }
         else
         {
             ModelState.AddModelError(nameof(UserName), "Credentials are incorrect.");
