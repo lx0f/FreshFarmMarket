@@ -59,6 +59,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
