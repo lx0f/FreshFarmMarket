@@ -17,6 +17,7 @@ public class LogoutModel : PageModel
     public async Task<IActionResult> OnGet()
     {
         await _signInManager.SignOutAsync();
-        return Redirect("/Index");
+        HttpContext.Session.Clear();
+        return Redirect("/Login");
     }
 }
