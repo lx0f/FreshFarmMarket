@@ -43,6 +43,10 @@ public class RegisterModel : PageModel
 
     [Required]
     [BindProperty]
+    public string About { get; set; }
+
+    [Required]
+    [BindProperty]
     public Gender Gender { get; set; }
 
     [BindProperty]
@@ -107,12 +111,13 @@ public class RegisterModel : PageModel
         };
         var newUser = new User()
         {
-            UserName = UserName,
+            About = About,
+            CreditCard = CreditCard,
+            DeliveryAddress = deliveryAddress,
             Email = Email,
             Gender = Gender,
-            DeliveryAddress = deliveryAddress,
             PhoneNumber = PhoneNumber,
-            CreditCard = CreditCard
+            UserName = UserName,
         };
 
         var result = await _userManager.CreateAsync(newUser, Password);
