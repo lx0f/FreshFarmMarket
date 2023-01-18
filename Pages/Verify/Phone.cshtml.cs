@@ -11,9 +11,9 @@ namespace FreshFarmMarket.Pages.Verify;
 public class PhoneModel : PageModel
 {
     private readonly UserManager<User> _userManager;
-    private readonly SmsService _smsService;
+    private readonly CommunicationService _smsService;
 
-    public PhoneModel(UserManager<User> userManager, SmsService smsService)
+    public PhoneModel(UserManager<User> userManager, CommunicationService smsService)
     {
         _userManager = userManager;
         _smsService = smsService;

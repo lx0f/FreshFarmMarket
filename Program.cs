@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.Configure<GoogleReCaptchaConfig>(builder.Configuration.GetSection("GoogleReCaptcha"));
 builder.Services.Configure<TwilioConfig>(builder.Configuration.GetSection("Twilio"));
+builder.Services.Configure<SendGridConfig>(builder.Configuration.GetSection("SendGrid"));
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -30,6 +31,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.User.RequireUniqueEmail = true;
 })
     .AddTokenProvider<PhoneNumberTokenProvider<User>>("Phone")
+    .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<DataContext>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -44,7 +46,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
     options.SlidingExpiration = true;
 });
-builder.Services.AddScoped<SmsService>();
+builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddTransient<GoogleReCaptchaService>();
 
 var app = builder.Build();

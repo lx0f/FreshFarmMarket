@@ -1,24 +1,36 @@
 @page
+@model EmailModel;
+@{
+    var email = HttpContext.Session.GetString("Email");
+}
 
-@* <main class="container">
+<main class="container">
     <div class="row justify-content-center align-items-center">
-    <div class="col-sm-12 col-md-12 col-lg-6">
-    <form method="post" asp-page-handler="Send">
-    <div class="form-group">
-    <label asp-for=""></label>
-    <input asp-for="">
-    <span asp-validation-for=""></span>
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <form method="post" asp-page-handler="Send">
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">@@</span>
+                        <input asp-for="Email" class="form-control">
+                    </div>
+                    @if (Model.EmailCodeSent)
+                    {
+                        <small class="text-muted">Sent!</small>
+                    }
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <button class="btn btn-primary">Send Code</button>
+            </form>
+            <form method="post" asp-page-handler="Verify">
+                <input type="hidden" asp-for="Email" value="@email">
+                <div class="form-group">
+                    <label asp-for="EmailCode"></label>
+                    <input asp-for="EmailCode" class="form-control">
+                    <span asp-validation-for="EmailCode" class="text-danger"></span>
+                </div>
+                <button class="btn btn-primary">Verify</button>
+            </form>
+        </div>
     </div>
-    <button class="btn btn-primary"></button>
-    </form>
-    <form method="post" asp-page-handler="Verify">
-    <div class="form-group">
-    <label asp-for=""></label>
-    <input asp-for="">
-    <span asp-validation-for=""></span>
-    </div>
-    <button class="btn btn-primary"></button>
-    </form>
-    </div>
-    </div>
-    </main> *@
+</main>
