@@ -11,12 +11,14 @@ namespace FreshFarmMarket.Pages.Verify;
 public class PhoneModel : PageModel
 {
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly CommunicationService _smsService;
 
-    public PhoneModel(UserManager<User> userManager, CommunicationService smsService)
+    public PhoneModel(UserManager<User> userManager, CommunicationService smsService, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _smsService = smsService;
+        _signInManager = signInManager;
     }
 
     [BindProperty]
@@ -72,8 +74,7 @@ public class PhoneModel : PageModel
 
         if (result.Succeeded)
         {
-            Console.WriteLine("Successs");
-            return Redirect("/Verify/Email");
+            return Redirect("/Login");
         }
 
         foreach (var err in result.Errors)

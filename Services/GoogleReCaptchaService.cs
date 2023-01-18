@@ -13,7 +13,7 @@ public class GoogleReCaptchaService
         _config = config;
     }
 
-    public async Task<bool> Verify(string token)
+    public async Task<GoogleReCaptchaResult> Verify(string token)
     {
         try
         {
@@ -23,21 +23,32 @@ public class GoogleReCaptchaService
             var httpResult = await client.GetAsync(url);
             if (httpResult.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                return false;
+                return GoogleReCaptchaResult.FAIL;
             }
             var responseString = await httpResult.Content.ReadAsStringAsync();
             var googleResult = JsonConvert.DeserializeObject<GoogleReCaptchaResponse>(responseString);
 
             if (googleResult is null)
             {
-                return false;
+                return GoogleReCaptchaResult.FAIL;
             }
 
-            return googleResult.success && googleResult.score >= 0.5;
+            if (!googleResult.success)
+            {
+                return GoogleReCaptchaResult.FAIL;
+            }
+            else if (googleResult.score >= 0.5)
+            {
+                return GoogleReCaptchaResult.SUCCESS;
+            }
+            else
+            {
+                return GoogleReCaptchaResult.SUSPICIOUS;
+            }
         }
         catch (Exception)
         {
-            return false;
+            return GoogleReCaptchaResult.FAIL;
         }
     }
 }

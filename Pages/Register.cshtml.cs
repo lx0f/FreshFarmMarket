@@ -92,7 +92,7 @@ public class RegisterModel : PageModel
 
         var success = await _googleService.Verify(Token);
 
-        if (!success)
+        if (success == GoogleReCaptchaResult.FAIL)
         {
             return Page();
         }
@@ -116,6 +116,9 @@ public class RegisterModel : PageModel
             DeliveryAddress = deliveryAddress,
             Gender = Gender,
             UserName = UserName,
+            TwoFactorEnabled = true,
+            Email = Email,
+            PhoneNumber = PhoneNumber
         };
 
         var result = await _userManager.CreateAsync(newUser, Password);

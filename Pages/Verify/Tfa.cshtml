@@ -1,0 +1,28 @@
+@page
+@model TfaModel
+@{
+    var rememberMe = false;
+    var tryRememberMe = TempData["RememberMe"];
+    if (tryRememberMe is not null)
+    {
+        rememberMe = (bool)tryRememberMe;
+    }
+}
+
+<main class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <h1>2FA Verification Code</h1>
+            <small class="text-muted">Check your SMS</small>
+            <form method="post">
+                <input type="hidden" asp-for="RememberMe" value="@rememberMe">
+                <div class="from-group">
+                    <label asp-for="Code"></label>
+                    <input asp-for="Code" class="form-control">
+                    <span asp-validation-for="Code"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</main>

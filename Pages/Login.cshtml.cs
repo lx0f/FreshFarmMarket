@@ -50,7 +50,7 @@ public class LoginModel : PageModel
 
         var success = await _googleService.Verify(Token);
 
-        if (!success)
+        if (success == GoogleReCaptchaResult.FAIL)
         {
             return Page();
         }
@@ -61,6 +61,11 @@ public class LoginModel : PageModel
             ModelState.AddModelError(nameof(UserName), "Credentials are incorrect.");
             ModelState.AddModelError(nameof(Password), "Credentials are incorrect.");
             return Page();
+        }
+
+        if (success == GoogleReCaptchaResult.SUSPICIOUS)
+        {
+            return RedirectToPage("/Verify/Tfa", new { RememberMe });
         }
 
         var result = await _signInManager.PasswordSignInAsync(user, Password, RememberMe, true);
@@ -74,6 +79,7 @@ public class LoginModel : PageModel
             {
                 return Redirect("/Verify/Email");
             }
+
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)
@@ -83,6 +89,10 @@ public class LoginModel : PageModel
         else if (result.IsNotAllowed)
         {
             return Forbid();
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            return RedirectToPage("/Verify/Tfa", new { RememberMe });
         }
         else
         {
