@@ -14,19 +14,19 @@ public class RegisterModel : PageModel
     private readonly IHostEnvironment _env;
     private readonly ILogger<RegisterModel> _logger;
     private readonly UserManager<User> _userManager;
-    private readonly IOptions<GoogleReCaptchaConfig> _config;
+    private readonly IOptions<GoogleReCaptchaConfig> _googleConfig;
     private readonly GoogleReCaptchaService _googleService;
 
-    public RegisterModel(IHostEnvironment env, ILoggerFactory loggerFactory, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService)
+    public RegisterModel(IHostEnvironment env, ILoggerFactory loggerFactory, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> googleConfig, GoogleReCaptchaService googleService)
     {
         _env = env;
         _logger = loggerFactory.CreateLogger<RegisterModel>();
         _userManager = userManager;
-        _config = config;
+        _googleConfig = googleConfig;
         _googleService = googleService;
     }
 
-    public string GetSiteKey() => _config.Value.SiteKey;
+    public string GetSiteKey() => _googleConfig.Value.SiteKey;
 
     [BindProperty]
     [Required]
@@ -114,9 +114,7 @@ public class RegisterModel : PageModel
             About = About,
             CreditCard = CreditCard,
             DeliveryAddress = deliveryAddress,
-            Email = Email,
             Gender = Gender,
-            PhoneNumber = PhoneNumber,
             UserName = UserName,
         };
 

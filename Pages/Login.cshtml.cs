@@ -66,6 +66,14 @@ public class LoginModel : PageModel
         var result = await _signInManager.PasswordSignInAsync(user, Password, RememberMe, true);
         if (result.Succeeded)
         {
+            if (!user.PhoneNumberConfirmed)
+            {
+                return Redirect("/Verify/Phone");
+            }
+            if (!user.EmailConfirmed)
+            {
+                return Redirect("/Verify/Email");
+            }
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)

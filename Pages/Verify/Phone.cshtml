@@ -1,0 +1,36 @@
+@page
+@model PhoneModel;
+@{
+    var phoneNumber = HttpContext.Session.GetString("PhoneNumber");
+}
+
+<main class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <form method="post" asp-page-handler="Send">
+                <div class="form-group">
+                    <label asp-for="PhoneNumber"></label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">+65</span>
+                        <input asp-for="PhoneNumber" class="form-control">
+                    </div>
+                    @if (Model.PhoneNumberCodeSent)
+                    {
+                        <small class="text-muted">Sent!</small>
+                    }
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <button class="btn btn-primary">Send Code</button>
+            </form>
+            <form method="post" asp-page-handler="Verify">
+                <input type="hidden" asp-for="PhoneNumber" value="@phoneNumber">
+                <div class="form-group">
+                    <label asp-for="PhoneNumberCode"></label>
+                    <input asp-for="PhoneNumberCode" class="form-control">
+                    <span asp-validation-for="PhoneNumberCode" class="text-danger"></span>
+                </div>
+                <button class="btn btn-primary">Verify</button>
+            </form>
+        </div>
+    </div>
+</main>
