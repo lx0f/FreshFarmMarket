@@ -32,7 +32,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 })
     .AddTokenProvider<PhoneNumberTokenProvider<User>>("Phone")
     .AddDefaultTokenProviders()
-    .AddEntityFrameworkStores<DataContext>();
+    .AddEntityFrameworkStores<DataContext>()
+    .AddPasswordValidator<PasswordHistoryValidator>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
@@ -47,6 +48,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 builder.Services.AddScoped<CommunicationService>();
+builder.Services.AddScoped<PasswordHistoryValidator>();
 builder.Services.AddTransient<GoogleReCaptchaService>();
 
 var app = builder.Build();

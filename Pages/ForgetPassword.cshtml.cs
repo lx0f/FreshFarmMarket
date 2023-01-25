@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FreshFarmMarket.Models;
 using FreshFarmMarket.Services;
+using FreshFarmMarket.Util;
 
 namespace FreshFarmMarket.Pages;
 
@@ -10,11 +11,13 @@ public class ForgetPasswordModel : PageModel
 {
     private readonly UserManager<User> _userManager;
     private readonly CommunicationService _communicationService;
+    private readonly PasswordHistoryValidator _phValidator;
 
-    public ForgetPasswordModel(CommunicationService communicationService, UserManager<User> userManager)
+    public ForgetPasswordModel(CommunicationService communicationService, UserManager<User> userManager, PasswordHistoryValidator phValidator)
     {
         _communicationService = communicationService;
         _userManager = userManager;
+        _phValidator = phValidator;
     }
 
     [BindProperty]
@@ -87,6 +90,7 @@ public class ForgetPasswordModel : PageModel
 
         if (result.Succeeded)
         {
+            await _phValidator.AddPasswordHash(user, _userManager.PasswordHasher.HashPassword(user, NewPassword));
             return Redirect("/Login");
         }
         else

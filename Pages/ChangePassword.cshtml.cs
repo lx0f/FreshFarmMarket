@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FreshFarmMarket.Models;
+using FreshFarmMarket.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,11 +11,12 @@ public class ChangePasswordModel : PageModel
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-
-    public ChangePasswordModel(UserManager<User> userManager, SignInManager<User> signInManager)
+    private readonly PasswordHistoryValidator _phValidator;
+    public ChangePasswordModel(UserManager<User> userManager, SignInManager<User> signInManager, PasswordHistoryValidator phValidator)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _phValidator = phValidator;
     }
 
     [BindProperty]
@@ -35,6 +37,7 @@ public class ChangePasswordModel : PageModel
         var result = await _userManager.ChangePasswordAsync(user, OldPassword, NewPassword);
         if (result.Succeeded)
         {
+            await _phValidator.AddPasswordHash(user, _userManager.PasswordHasher.HashPassword(user, NewPassword));
             await _signInManager.SignOutAsync();
             return Redirect("/Login");
         }

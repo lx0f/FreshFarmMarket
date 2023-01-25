@@ -16,14 +16,22 @@ public class RegisterModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly IOptions<GoogleReCaptchaConfig> _googleConfig;
     private readonly GoogleReCaptchaService _googleService;
+    private readonly PasswordHistoryValidator _phValidator;
 
-    public RegisterModel(IHostEnvironment env, ILoggerFactory loggerFactory, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> googleConfig, GoogleReCaptchaService googleService)
+    public RegisterModel(
+        IHostEnvironment env,
+        ILoggerFactory loggerFactory,
+        UserManager<User> userManager,
+        IOptions<GoogleReCaptchaConfig> googleConfig,
+        GoogleReCaptchaService googleService,
+        PasswordHistoryValidator phValidator)
     {
         _env = env;
         _logger = loggerFactory.CreateLogger<RegisterModel>();
         _userManager = userManager;
         _googleConfig = googleConfig;
         _googleService = googleService;
+        _phValidator = phValidator;
     }
 
     public string GetSiteKey() => _googleConfig.Value.SiteKey;
@@ -144,6 +152,8 @@ public class RegisterModel : PageModel
         var user = await _userManager.FindByNameAsync(UserName);
         user.ImageFilePath = filePath;
         await _userManager.UpdateAsync(user);
+
+        await _phValidator.AddPasswordHash(user, user.PasswordHash);
 
         _logger.LogInformation("User registrations succeeded: {username}.", UserName);
 

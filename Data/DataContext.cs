@@ -13,4 +13,5 @@ public class DataContext : IdentityDbContext<User>
     }
 
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<PasswordHash> PasswordHashes { get; set; }
 }
