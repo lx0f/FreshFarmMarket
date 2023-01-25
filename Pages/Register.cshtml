@@ -13,6 +13,7 @@
             <h1>Register</h1>
             <div asp-validation-summary="All" class="text-danger"></div>
             <form method="post" class="d-grid gap-3" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
                 <div class="form-group">
                     <label asp-for="UserName">Username</label>
                     <input placeholder="UserName" asp-for="UserName" class="form-control" />
