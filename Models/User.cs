@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FreshFarmMarket.Util;
 
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ public class User : IdentityUser
     public Address? DeliveryAddress { get; set; }
     public byte[]? CreditCardBytes { get; private set; }
     [CreditCard]
+    [NotMapped]
     public string? CreditCard
     {
         get => CreditCardBytes is not null
