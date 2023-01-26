@@ -16,12 +16,14 @@ public class LoginModel : PageModel
     private readonly SignInManager<User> _signInManager;
     private readonly GoogleReCaptchaService _googleService;
     private readonly IOptions<GoogleReCaptchaConfig> _config;
-    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService)
+    private readonly ILogger _logger;
+    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService, ILogger<LoginModel> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _config = config;
         _googleService = googleService;
+        _logger = logger;
     }
 
     public IList<AuthenticationScheme> ExternalLogins { get; set; }
@@ -89,7 +91,7 @@ public class LoginModel : PageModel
             {
                 return Redirect("/Verify/Email");
             }
-
+            _logger.LogInformation(Event.LOGIN, "{username} logged in at {datetime}", user.UserName, DateTime.Now);
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)

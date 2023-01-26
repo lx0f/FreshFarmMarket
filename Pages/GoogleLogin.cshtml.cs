@@ -9,10 +9,12 @@ namespace FreshFarmMarket.Pages;
 public class GoogleLogin : PageModel
 {
     private readonly SignInManager<User> _signInManager;
+    private readonly ILogger _logger;
 
-    public GoogleLogin(SignInManager<User> signInManager)
+    public GoogleLogin(SignInManager<User> signInManager, ILogger<GoogleLogin> logger)
     {
         _signInManager = signInManager;
+        _logger = logger;
     }
 
     public async Task<IActionResult> OnGet(bool isPersistent)
@@ -38,9 +40,11 @@ public class GoogleLogin : PageModel
                     Email = loginInfo.Principal.FindFirstValue(ClaimTypes.Email),
                 };
                 await _signInManager.UserManager.CreateAsync(user);
+                _logger.LogInformation(Event.EXTERNAL_REGISTER, "{username} registered with external provider at {datetime}", user.UserName, DateTime.Now);
             }
             await _signInManager.UserManager.AddLoginAsync(user, loginInfo);
             await _signInManager.SignInAsync(user, isPersistent);
+            _logger.LogInformation(Event.EXTERNAL_SIGNIN, "{username} sign in with external provider at {datetime}", user.UserName, DateTime.Now);
         }
         return Redirect("/");
     }

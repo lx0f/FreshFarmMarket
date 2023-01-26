@@ -1,15 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using FreshFarmMarket.Models;
+@using FreshFarmMarket.Util;
 @inject UserManager<User> _userManager;
+@inject PasswordHistoryValidator _phValidator;
 
 @{
     // check if user is from external provider
     var user = await _userManager.GetUserAsync(User);
     bool? hasPassword = null;
+    bool? canChangePassword = null;
     if (user is not null)
     {
         hasPassword = await _userManager.HasPasswordAsync(user);
+        canChangePassword = await _phValidator.CanChangePassword(user);
     }
+
 }
 
 <!DOCTYPE html>
@@ -46,7 +51,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
                             </li>
-                            @if (hasPassword == true)
+                            @if (hasPassword == true && canChangePassword == true)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-page="/ChangePassword">Change Password</a>

@@ -12,7 +12,7 @@ namespace FreshFarmMarket.Pages;
 public class RegisterModel : PageModel
 {
     private readonly IHostEnvironment _env;
-    private readonly ILogger<RegisterModel> _logger;
+    private readonly ILogger _logger;
     private readonly UserManager<User> _userManager;
     private readonly IOptions<GoogleReCaptchaConfig> _googleConfig;
     private readonly GoogleReCaptchaService _googleService;
@@ -20,14 +20,14 @@ public class RegisterModel : PageModel
 
     public RegisterModel(
         IHostEnvironment env,
-        ILoggerFactory loggerFactory,
+        ILogger<RegisterModel> logger,
         UserManager<User> userManager,
         IOptions<GoogleReCaptchaConfig> googleConfig,
         GoogleReCaptchaService googleService,
         PasswordHistoryValidator phValidator)
     {
         _env = env;
-        _logger = loggerFactory.CreateLogger<RegisterModel>();
+        _logger = logger;
         _userManager = userManager;
         _googleConfig = googleConfig;
         _googleService = googleService;
@@ -155,7 +155,7 @@ public class RegisterModel : PageModel
 
         await _phValidator.AddPasswordHash(user, user.PasswordHash);
 
-        _logger.LogInformation("User registrations succeeded: {username}.", UserName);
+        _logger.LogInformation(Event.REGISTER, "{username} registered at {datetime}", UserName, DateTime.Now);
 
         return Redirect("/Login");
     }

@@ -11,11 +11,13 @@ public class EmailModel : PageModel
 {
     private readonly UserManager<User> _userManager;
     private readonly CommunicationService _communicationService;
+    private readonly ILogger _logger;
 
-    public EmailModel(UserManager<User> userManager, CommunicationService communicationService)
+    public EmailModel(UserManager<User> userManager, CommunicationService communicationService, ILogger<EmailModel> logger)
     {
         _userManager = userManager;
         _communicationService = communicationService;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -68,7 +70,7 @@ public class EmailModel : PageModel
 
         if (result.Succeeded)
         {
-            Console.WriteLine("Successs");
+            _logger.LogInformation(Event.VERIFY_EMAIL_ADDRESS, "{username} verified email address at {datetime}", user.UserName, DateTime.Now);
             return Redirect("/Index");
         }
 

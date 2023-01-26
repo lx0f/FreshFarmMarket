@@ -13,12 +13,14 @@ public class PhoneModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly CommunicationService _smsService;
+    private readonly ILogger _logger;
 
-    public PhoneModel(UserManager<User> userManager, CommunicationService smsService, SignInManager<User> signInManager)
+    public PhoneModel(UserManager<User> userManager, CommunicationService smsService, SignInManager<User> signInManager, ILogger<PhoneModel> logger)
     {
         _userManager = userManager;
         _smsService = smsService;
         _signInManager = signInManager;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -38,6 +40,7 @@ public class PhoneModel : PageModel
         {
             PhoneNumber = "+65" + PhoneNumber;
         }
+        Console.WriteLine(PhoneNumber);
         var user = await _userManager.GetUserAsync(User);
         var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, PhoneNumber);
         Console.WriteLine("Token " + token);
@@ -74,6 +77,7 @@ public class PhoneModel : PageModel
 
         if (result.Succeeded)
         {
+            _logger.LogInformation(Event.VERIFY_PHONE_NUMBER, "{username} verified phone number at {datetime}", user.UserName, DateTime.Now);
             return Redirect("/Login");
         }
 
