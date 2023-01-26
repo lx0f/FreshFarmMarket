@@ -3,6 +3,8 @@ using FreshFarmMarket.Models;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Google;
+
 using FreshFarmMarket.Util;
 using FreshFarmMarket.Services;
 
@@ -13,6 +15,7 @@ builder.Services.AddRazorPages();
 builder.Services.Configure<GoogleReCaptchaConfig>(builder.Configuration.GetSection("GoogleReCaptcha"));
 builder.Services.Configure<TwilioConfig>(builder.Configuration.GetSection("Twilio"));
 builder.Services.Configure<SendGridConfig>(builder.Configuration.GetSection("SendGrid"));
+builder.Services.Configure<GoogleOAuthConfig>(builder.Configuration.GetSection("GoogleOAuth"));
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -39,6 +42,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
+});
+builder.Services.AddAuthentication()
+.AddGoogle(options =>
+{
+    var config = builder.Configuration.GetSection("GoogleOAuth").Get<GoogleOAuthConfig>();
+    options.ClientId = config.ClientID;
+    options.ClientSecret = config.ClientSecret;
 });
 builder.Services.ConfigureApplicationCookie(options =>
 {

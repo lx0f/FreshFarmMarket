@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FreshFarmMarket.Pages;
 
@@ -22,6 +23,8 @@ public class LoginModel : PageModel
         _config = config;
         _googleService = googleService;
     }
+
+    public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
     [BindProperty]
     [Required]
@@ -40,8 +43,15 @@ public class LoginModel : PageModel
 
     public string GetSiteKey() => _config.Value.SiteKey;
 
-    public void OnGet() { }
-    public async Task<IActionResult> OnPostAsync()
+    public async Task OnGet()
+    {
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+    }
+    public IActionResult OnPostGoogle()
+    {
+        return Challenge(_signInManager.ConfigureExternalAuthenticationProperties("Google", "/GoogleLogin"), "Google");
+    }
+    public async Task<IActionResult> OnPostInHouse()
     {
         if (!ModelState.IsValid)
         {

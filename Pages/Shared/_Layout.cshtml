@@ -1,4 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using FreshFarmMarket.Models;
+@inject UserManager<User> _userManager;
+
+@{
+    // check if user is from external provider
+    var user = await _userManager.GetUserAsync(User);
+    bool? hasPassword = null;
+    if (user is not null)
+    {
+        hasPassword = await _userManager.HasPasswordAsync(user);
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -32,9 +46,12 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/ChangePassword">Change Password</a>
-                            </li>
+                            @if (hasPassword == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/ChangePassword">Change Password</a>
+                                </li>
+                            }
                         }
                         else
                         {

@@ -9,7 +9,7 @@
         <div class="col-sm-12 col-md-12 col-lg-6">
             <h1>Login</h1>
             <div asp-validation-summary="All" class="text-danger"></div>
-            <form method="post" class="d-grid gap-3">
+            <form method="post" class="d-grid gap-3" asp-page-handler="InHouse">
                 @Html.AntiForgeryToken()
                 <div class="form-group">
                     <label asp-for="UserName">Username</label>
@@ -28,6 +28,10 @@
                 </div>
                 <input type="hidden" asp-for="Token">
                 <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <hr>
+            <form method="post" class="d-grid gap-3" asp-page-handler="Google">
+                <button type="submit" class="btn btn-primary">Google</button>
             </form>
         </div>
     </div>
