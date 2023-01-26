@@ -91,7 +91,14 @@ public class RegisterModel : PageModel
     [Required]
     public IFormFile? Image { get; set; }
 
-    public void OnGet() { }
+    public IActionResult OnGet()
+    {
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            return Redirect("/Index");
+        }
+        return Page();
+    }
 
     public async Task<IActionResult> OnPostAsync()
     {

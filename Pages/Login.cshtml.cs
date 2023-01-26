@@ -26,8 +26,6 @@ public class LoginModel : PageModel
         _logger = logger;
     }
 
-    public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
     [BindProperty]
     [Required]
     public string UserName { get; set; } = default!;
@@ -45,9 +43,13 @@ public class LoginModel : PageModel
 
     public string GetSiteKey() => _config.Value.SiteKey;
 
-    public async Task OnGet()
+    public IActionResult OnGet()
     {
-        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            return Redirect("/Index");
+        }
+        return Page();
     }
     public IActionResult OnPostGoogle()
     {
