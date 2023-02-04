@@ -1,10 +1,21 @@
 ﻿@page
 @model IndexModel
+@using Microsoft.AspNetCore.Identity;
+@using FreshFarmMarket.Models;
+@inject UserManager<User> _userManager;
 @{
     ViewData["Title"] = "Home page";
+    var user = await _userManager.GetUserAsync(User);
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <hr>
+    @if (user is not null)
+    {
+        <h1 class="display-4">@user.UserName</h1>
+        <p>@user.CreditCard</p>
+        <img src="~/Uploads/@user.ImageFilePath">
+    }
 </div>

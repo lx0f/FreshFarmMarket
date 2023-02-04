@@ -151,12 +151,12 @@ public class RegisterModel : PageModel
         }
 
         var fileName = Guid.NewGuid().ToString() + ".jpg";
-        var filePath = Path.Combine(_env.ContentRootPath, "Uploads", fileName);
+        var filePath = Path.Combine(_env.ContentRootPath, "wwwroot/Uploads", fileName);
         using var fs = new FileStream(filePath, FileMode.Create);
         await Image!.CopyToAsync(fs);
 
         var user = await _userManager.FindByNameAsync(UserName);
-        user.ImageFilePath = filePath;
+        user.ImageFilePath = fileName;
         await _userManager.UpdateAsync(user);
 
         await _phValidator.AddPasswordHash(user, user.PasswordHash);
