@@ -16,8 +16,8 @@ public class LoginModel : PageModel
     private readonly SignInManager<User> _signInManager;
     private readonly GoogleReCaptchaService _googleService;
     private readonly IOptions<GoogleReCaptchaConfig> _config;
-    private readonly ILogger _logger;
-    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService, ILogger<LoginModel> logger)
+    private readonly EventLogService<LoginModel> _logger;
+    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, IOptions<GoogleReCaptchaConfig> config, GoogleReCaptchaService googleService, EventLogService<LoginModel> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -85,6 +85,7 @@ public class LoginModel : PageModel
         var result = await _signInManager.PasswordSignInAsync(user, Password, RememberMe, true);
         if (result.Succeeded)
         {
+            await _logger.Log(Event.LOGIN, $"{user.UserName} logged in at {DateTime.Now}", user);
             if (!user.PhoneNumberConfirmed)
             {
                 return Redirect("/Verify/Phone");
@@ -93,7 +94,6 @@ public class LoginModel : PageModel
             {
                 return Redirect("/Verify/Email");
             }
-            _logger.LogInformation(Event.LOGIN, "{username} logged in at {datetime}", user.UserName, DateTime.Now);
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)

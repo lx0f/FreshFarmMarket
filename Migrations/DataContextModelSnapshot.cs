@@ -34,6 +34,28 @@ namespace FreshFarmMarket.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("FreshFarmMarket.Models.EventLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Event")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventLogs");
+                });
+
             modelBuilder.Entity("FreshFarmMarket.Models.PasswordHash", b =>
                 {
                     b.Property<int>("Id")
@@ -263,6 +285,15 @@ namespace FreshFarmMarket.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("FreshFarmMarket.Models.EventLog", b =>
+                {
+                    b.HasOne("FreshFarmMarket.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FreshFarmMarket.Models.PasswordHash", b =>

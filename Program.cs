@@ -59,6 +59,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<PasswordHistoryValidator>();
+builder.Services.AddScoped(typeof(EventLogService<>));
 builder.Services.AddTransient<GoogleReCaptchaService>();
 
 var app = builder.Build();

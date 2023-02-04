@@ -12,9 +12,9 @@ public class ForgetPasswordModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly CommunicationService _communicationService;
     private readonly PasswordHistoryValidator _phValidator;
-    private readonly ILogger _logger;
+    private readonly EventLogService<ForgetPasswordModel> _logger;
 
-    public ForgetPasswordModel(CommunicationService communicationService, UserManager<User> userManager, PasswordHistoryValidator phValidator, ILogger<ForgetPasswordModel> logger)
+    public ForgetPasswordModel(CommunicationService communicationService, UserManager<User> userManager, PasswordHistoryValidator phValidator, EventLogService<ForgetPasswordModel> logger)
     {
         _communicationService = communicationService;
         _userManager = userManager;
@@ -92,7 +92,7 @@ public class ForgetPasswordModel : PageModel
 
         if (result.Succeeded)
         {
-            _logger.LogInformation(Event.FORGET_PASSWORD, "{username} forget password at {datetime}", user.UserName, DateTime.Now);
+            await _logger.Log(Event.FORGET_PASSWORD, $"{user.UserName} forget password at {DateTime.Now}", user);
             await _phValidator.AddPasswordHash(user, _userManager.PasswordHasher.HashPassword(user, NewPassword));
             return Redirect("/Login");
         }

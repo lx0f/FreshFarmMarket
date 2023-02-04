@@ -13,9 +13,9 @@ public class TfaModel : PageModel
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
     private readonly CommunicationService _communicationService;
-    private readonly ILogger _logger;
+    private readonly EventLogService<TfaModel> _logger;
 
-    public TfaModel(UserManager<User> userManager, CommunicationService communicationService, SignInManager<User> signInManager, ILogger<TfaModel> logger)
+    public TfaModel(UserManager<User> userManager, CommunicationService communicationService, SignInManager<User> signInManager, EventLogService<TfaModel> logger)
     {
         _userManager = userManager;
         _communicationService = communicationService;
@@ -51,7 +51,7 @@ public class TfaModel : PageModel
         if (result.Succeeded)
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            _logger.LogInformation(Event.VERIFY_TFA, "{username} verified 2fa successfully at {datetime}", user.UserName, DateTime.Now);
+            await _logger.Log(Event.VERIFY_TFA, $"{user.UserName} verified 2fa successfully at {DateTime.Now}", user);
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)

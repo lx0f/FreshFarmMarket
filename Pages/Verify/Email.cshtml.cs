@@ -11,9 +11,9 @@ public class EmailModel : PageModel
 {
     private readonly UserManager<User> _userManager;
     private readonly CommunicationService _communicationService;
-    private readonly ILogger _logger;
+    private readonly EventLogService<EmailModel> _logger;
 
-    public EmailModel(UserManager<User> userManager, CommunicationService communicationService, ILogger<EmailModel> logger)
+    public EmailModel(UserManager<User> userManager, CommunicationService communicationService, EventLogService<EmailModel> logger)
     {
         _userManager = userManager;
         _communicationService = communicationService;
@@ -70,7 +70,7 @@ public class EmailModel : PageModel
 
         if (result.Succeeded)
         {
-            _logger.LogInformation(Event.VERIFY_EMAIL_ADDRESS, "{username} verified email address at {datetime}", user.UserName, DateTime.Now);
+            await _logger.Log(Event.VERIFY_EMAIL_ADDRESS, $"{user.UserName} verified email address at {DateTime.Now}", user);
             return Redirect("/Index");
         }
 

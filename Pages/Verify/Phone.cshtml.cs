@@ -13,9 +13,9 @@ public class PhoneModel : PageModel
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly CommunicationService _smsService;
-    private readonly ILogger _logger;
+    private readonly EventLogService<PhoneModel> _logger;
 
-    public PhoneModel(UserManager<User> userManager, CommunicationService smsService, SignInManager<User> signInManager, ILogger<PhoneModel> logger)
+    public PhoneModel(UserManager<User> userManager, CommunicationService smsService, SignInManager<User> signInManager, EventLogService<PhoneModel> logger)
     {
         _userManager = userManager;
         _smsService = smsService;
@@ -77,7 +77,7 @@ public class PhoneModel : PageModel
 
         if (result.Succeeded)
         {
-            _logger.LogInformation(Event.VERIFY_PHONE_NUMBER, "{username} verified phone number at {datetime}", user.UserName, DateTime.Now);
+            await _logger.Log(Event.VERIFY_PHONE_NUMBER, $"{user.UserName} verified phone number at {DateTime.Now}", user);
             return Redirect("/Login");
         }
 

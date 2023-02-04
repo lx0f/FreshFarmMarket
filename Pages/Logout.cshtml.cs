@@ -1,4 +1,5 @@
 using FreshFarmMarket.Models;
+using FreshFarmMarket.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,9 +9,9 @@ namespace FreshFarmMarket.Pages;
 public class LogoutModel : PageModel
 {
     private readonly SignInManager<User> _signInManager;
-    private readonly ILogger _logger;
+    private readonly EventLogService<LogoutModel> _logger;
 
-    public LogoutModel(SignInManager<User> signInManager, ILogger<LogoutModel> logger)
+    public LogoutModel(SignInManager<User> signInManager, EventLogService<LogoutModel> logger)
     {
         _signInManager = signInManager;
         _logger = logger;
@@ -18,10 +19,10 @@ public class LogoutModel : PageModel
 
     public async Task<IActionResult> OnGet()
     {
-        var username = (await _signInManager.UserManager.GetUserAsync(User)).UserName;
+        var user = await _signInManager.UserManager.GetUserAsync(User);
         await _signInManager.SignOutAsync();
         HttpContext.Session.Clear();
-        _logger.LogInformation(Event.LOGOUT, "{username} logged out at {datetime}", username, DateTime.Now);
+        await _logger.Log(Event.LOGOUT, $"{user.UserName} logged out at {DateTime.Now}", user);
         return Redirect("/Login");
     }
 }

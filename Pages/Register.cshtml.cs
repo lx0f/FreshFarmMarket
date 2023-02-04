@@ -12,7 +12,7 @@ namespace FreshFarmMarket.Pages;
 public class RegisterModel : PageModel
 {
     private readonly IHostEnvironment _env;
-    private readonly ILogger _logger;
+    private readonly EventLogService<RegisterModel> _logger;
     private readonly UserManager<User> _userManager;
     private readonly IOptions<GoogleReCaptchaConfig> _googleConfig;
     private readonly GoogleReCaptchaService _googleService;
@@ -20,7 +20,7 @@ public class RegisterModel : PageModel
 
     public RegisterModel(
         IHostEnvironment env,
-        ILogger<RegisterModel> logger,
+        EventLogService<RegisterModel> logger,
         UserManager<User> userManager,
         IOptions<GoogleReCaptchaConfig> googleConfig,
         GoogleReCaptchaService googleService,
@@ -146,7 +146,6 @@ public class RegisterModel : PageModel
             }
 
             var errors = string.Join(';', result.Errors.Select(e => e.Code));
-            _logger.LogWarning("User registration failed: {errors}.", errors);
 
             return Page();
         }
@@ -162,7 +161,7 @@ public class RegisterModel : PageModel
 
         await _phValidator.AddPasswordHash(user, user.PasswordHash);
 
-        _logger.LogInformation(Event.REGISTER, "{username} registered at {datetime}", UserName, DateTime.Now);
+        await _logger.Log(Event.REGISTER, $"{user.UserName} registered at {DateTime.Now}", user);
 
         return Redirect("/Login");
     }
