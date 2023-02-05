@@ -22,4 +22,6 @@ public class User : IdentityUser
             : null;
         set => CreditCardBytes = EncryptionProvider.Encrypt(value!);
     }
+    public bool IsLoggedIn { get; set; } = false;
+    public string? LastDevice { get; set; }
 }

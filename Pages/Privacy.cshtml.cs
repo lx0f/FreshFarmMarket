@@ -1,6 +1,4 @@
-﻿using FreshFarmMarket.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FreshFarmMarket.Pages;
 

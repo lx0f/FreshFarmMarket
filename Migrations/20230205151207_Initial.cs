@@ -47,6 +47,8 @@ namespace FreshFarmMarket.Migrations
                     ImageFilePath = table.Column<string>(type: "TEXT", nullable: true),
                     DeliveryAddressId = table.Column<int>(type: "INTEGER", nullable: true),
                     CreditCardBytes = table.Column<byte[]>(type: "BLOB", nullable: true),
+                    IsLoggedIn = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LastDevice = table.Column<string>(type: "TEXT", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),

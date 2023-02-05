@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 using FreshFarmMarket.Models;
 using FreshFarmMarket.Services;
+using Microsoft.Net.Http.Headers;
 
 namespace FreshFarmMarket.Pages.Verify;
 
@@ -52,6 +53,9 @@ public class TfaModel : PageModel
         {
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             await _logger.Log(Event.VERIFY_TFA, $"{user.UserName} verified 2fa successfully at {DateTime.Now}", user);
+            user.IsLoggedIn = true;
+            user.LastDevice = Request.Headers[HeaderNames.UserAgent].ToString();
+            await _userManager.UpdateAsync(user);
             return Redirect("/Index");
         }
         else if (result.IsLockedOut)

@@ -23,6 +23,11 @@ public class LogoutModel : PageModel
         await _signInManager.SignOutAsync();
         HttpContext.Session.Clear();
         await _logger.Log(Event.LOGOUT, $"{user.UserName} logged out at {DateTime.Now}", user);
+        if (user is not null)
+        {
+            user.IsLoggedIn = false;
+            await _signInManager.UserManager.UpdateAsync(user);
+        }
         return Redirect("/Login");
     }
 }

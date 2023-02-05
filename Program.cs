@@ -54,8 +54,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Login";
     options.LogoutPath = "/Logout";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
-    options.SlidingExpiration = true;
 });
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<PasswordHistoryValidator>();
@@ -83,6 +81,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
+
+app.UseMiddleware<LogoutMiddleware>();
 
 app.MapRazorPages();
 

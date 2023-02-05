@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreshFarmMarket.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230204070943_Initial")]
+    [Migration("20230205151207_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,6 +112,12 @@ namespace FreshFarmMarket.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ImageFilePath")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsLoggedIn")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LastDevice")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")

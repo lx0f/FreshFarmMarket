@@ -112,6 +112,12 @@ namespace FreshFarmMarket.Migrations
                     b.Property<string>("ImageFilePath")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsLoggedIn")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LastDevice")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 

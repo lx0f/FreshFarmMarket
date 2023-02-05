@@ -60,12 +60,6 @@ public class PasswordHistoryValidator : IPasswordValidator<User>
         var passhash = await _context.PasswordHashes.Where(p => p.User == user).OrderByDescending(p => p.DateTime).FirstOrDefaultAsync();
         if (passhash is null)
             return true;
-
-        Console.WriteLine(DateTime.Now);
-        Console.WriteLine(passhash.DateTime);
-        Console.WriteLine(passhash.DateTime.AddMinutes(5));
-        Console.WriteLine(DateTime.Now > passhash.DateTime.AddMinutes(5));
-
         return DateTime.Now > passhash.DateTime.AddMinutes(5);
     }
 }

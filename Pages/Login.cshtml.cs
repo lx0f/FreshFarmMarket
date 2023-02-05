@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.Net.Http.Headers;
 
 namespace FreshFarmMarket.Pages;
 
@@ -77,6 +77,13 @@ public class LoginModel : PageModel
             return Page();
         }
 
+        var device = Request.Headers[HeaderNames.UserAgent].ToString();
+        if (user.IsLoggedIn && await _userManager.CheckPasswordAsync(user, Password) && user.LastDevice != device)
+        {
+            ModelState.AddModelError(nameof(UserName), "User is already logged in another device.");
+            return Page();
+        }
+
         if (success == GoogleReCaptchaResult.SUSPICIOUS)
         {
             return RedirectToPage("/Verify/Tfa", new { RememberMe });
@@ -106,6 +113,7 @@ public class LoginModel : PageModel
         }
         else if (result.RequiresTwoFactor)
         {
+            await _logger.Log(Event.LOGIN, $"{user.UserName} logged in at {DateTime.Now}", user);
             return RedirectToPage("/Verify/Tfa", new { RememberMe });
         }
         else
