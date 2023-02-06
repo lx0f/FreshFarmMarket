@@ -102,6 +102,13 @@ public class RegisterModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Image is not null
+            && Path.GetExtension(Image.FileName) != ".jpg"
+            && Path.GetExtension(Image.FileName) != ".JPG")
+        {
+            ModelState.AddModelError(nameof(Image), "Only .jpg images");
+        }
+
         if (!ModelState.IsValid)
             return Page();
 
