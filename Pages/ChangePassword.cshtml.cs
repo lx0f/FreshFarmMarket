@@ -2,12 +2,14 @@ using System.ComponentModel.DataAnnotations;
 using FreshFarmMarket.Models;
 using FreshFarmMarket.Services;
 using FreshFarmMarket.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FreshFarmMarket.Pages;
 
+[Authorize]
 public class ChangePasswordModel : PageModel
 {
     private readonly UserManager<User> _userManager;

@@ -32,6 +32,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.Tokens.PasswordResetTokenProvider = "Phone";
 })
     .AddTokenProvider<PhoneNumberTokenProvider<User>>("Phone")
     .AddDefaultTokenProviders()

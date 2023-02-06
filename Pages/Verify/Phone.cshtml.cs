@@ -78,7 +78,7 @@ public class PhoneModel : PageModel
         if (result.Succeeded)
         {
             await _logger.Log(Event.VERIFY_PHONE_NUMBER, $"{user.UserName} verified phone number at {DateTime.Now}", user);
-            return Redirect("/Login");
+            return Redirect("/Verify/Email");
         }
 
         foreach (var err in result.Errors)

@@ -26,7 +26,7 @@ public class ForgetPasswordModel : PageModel
     public string? UserName { get; set; }
 
     [BindProperty]
-    public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
 
     [BindProperty]
     public string? Code { get; set; }
@@ -43,9 +43,9 @@ public class ForgetPasswordModel : PageModel
             return Page();
         }
 
-        if (Email is null)
+        if (PhoneNumber is null)
         {
-            ModelState.AddModelError(nameof(Email), "The Email field is required.");
+            ModelState.AddModelError(nameof(PhoneNumber), "The PhoneNumber field is required.");
             return Page();
         }
 
@@ -57,14 +57,14 @@ public class ForgetPasswordModel : PageModel
             return Page();
         }
 
-        if (user.Email != Email)
+        if (user.PhoneNumber != PhoneNumber)
         {
-            ModelState.AddModelError(nameof(Email), "Wrong email.");
+            ModelState.AddModelError(nameof(PhoneNumber), "Wrong phone number.");
             return Page();
         }
 
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-        await _communicationService.SendEmail(Email, "Reset password code", $"Code: {code}");
+        await _communicationService.SendSms(PhoneNumber, code);
 
         CodeSent = true;
 

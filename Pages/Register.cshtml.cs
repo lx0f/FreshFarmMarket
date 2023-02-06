@@ -150,6 +150,9 @@ public class RegisterModel : PageModel
             return Page();
         }
 
+        HttpContext.Session.SetString("Email", Email!);
+        HttpContext.Session.SetString("PhoneNumber", PhoneNumber!);
+
         var fileName = Guid.NewGuid().ToString() + ".jpg";
         var filePath = Path.Combine(_env.ContentRootPath, "wwwroot/Uploads", fileName);
         using var fs = new FileStream(filePath, FileMode.Create);
