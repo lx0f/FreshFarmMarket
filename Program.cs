@@ -43,6 +43,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
+    options.Password.RequiredLength = 12;
 });
 builder.Services.AddAuthentication()
 .AddGoogle(options =>
@@ -55,6 +56,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Login";
     options.LogoutPath = "/Logout";
+    options.AccessDeniedPath = "/Errors/403";
 });
 builder.Services.AddScoped<CommunicationService>();
 builder.Services.AddScoped<PasswordHistoryValidator>();
@@ -84,6 +86,7 @@ app.UseAuthorization();
 app.UseSession();
 
 app.UseMiddleware<LogoutMiddleware>();
+app.UseMiddleware<MaxPasswordMiddleware>();
 
 app.MapRazorPages();
 

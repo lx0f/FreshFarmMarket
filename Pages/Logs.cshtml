@@ -1,0 +1,11 @@
+@page
+@using FreshFarmMarket.Models;
+@model LogsModel;
+
+<h1>Logs</h1>
+<ul>
+    @foreach (EventLog log in Model.EventLogs)
+    {
+        <li>@log.Id || @log.Event || @(log.User?.UserName ?? "N/A") || @log.TimeStamp</li>
+    }
+</ul>
